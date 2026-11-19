@@ -1,0 +1,19 @@
+# Gradle / Android Studio
+.gradle/
+.kotlin/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Paquets et clés
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# macOS
+.DS_Store
