@@ -42,15 +42,17 @@ Early project, built for one family and shared as is.
 
 ## Install
 
-Developers: you need [adb](https://developer.android.com/tools/adb) on a computer, and the Fire TV and the phone on the same Wi-Fi network.
+For now you need [adb](https://developer.android.com/tools/adb) on a computer, once, and the Fire TV and the phone on the same Wi-Fi network.
+
+Download `tv-nudge-tv-<version>.apk` and `tv-nudge-phone-<version>.apk` from the [latest release](https://github.com/FMagnanWD/tv-nudge/releases/latest), or build them yourself (see below).
 
 1. On the Fire TV, open **Settings → My Fire TV → About** and click the device name 7 times. Then, in **Developer options**, turn on **ADB debugging**.
 2. Find the Fire TV's IP address in **Settings → My Fire TV → About → Network**.
-3. Build both apps (see below), then install the TV app and grant it its permissions. Fire OS has no settings screen for these permissions:
+3. Install the TV app and grant it its permissions. Fire OS has no settings screen for these permissions:
 
    ```sh
    adb connect <FIRE_TV_IP>:5555
-   adb install -r tv/build/outputs/apk/debug/tv-debug.apk
+   adb install -r tv-nudge-tv-0.1.0.apk
    adb shell appops set io.github.tvnudge.tv SYSTEM_ALERT_WINDOW allow    # show messages over other apps
    adb shell appops set io.github.tvnudge.tv GET_USAGE_STATS allow        # app on screen, screen time
    adb shell settings put secure enabled_notification_listeners io.github.tvnudge.tv/io.github.tvnudge.tv.EcouteLecture   # what is playing
@@ -58,7 +60,7 @@ Developers: you need [adb](https://developer.android.com/tools/adb) on a compute
    ```
 
    The service starts again by itself when the Fire TV boots.
-4. Install `phone/build/outputs/apk/debug/phone-debug.apk` on the phone. Open it and enter the Fire TV's IP address at the bottom of the screen.
+4. Install `tv-nudge-phone-0.1.0.apk` on the phone (allow installs from your browser or file manager when asked). Open it and enter the Fire TV's IP address at the bottom of the screen.
 5. You can turn ADB debugging off again: the permissions stay.
 
 ## Build
@@ -67,7 +69,9 @@ Developers: you need [adb](https://developer.android.com/tools/adb) on a compute
 ./gradlew :tv:assembleDebug :phone:assembleDebug
 ```
 
-You need JDK 17 and the Android SDK. Android Studio provides both.
+You need JDK 17 and the Android SDK. Android Studio provides both. The APKs land in `tv/build/outputs/apk/debug/` and `phone/build/outputs/apk/debug/`. Debug builds cannot update release builds (different signatures): uninstall first.
+
+To sign release builds with your own key, see [`gradle/signature.gradle`](gradle/signature.gradle).
 
 ## API (port 7979 on the Fire TV)
 

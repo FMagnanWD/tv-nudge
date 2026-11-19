@@ -42,15 +42,17 @@ Projet jeune, fait pour une famille et partagé tel quel.
 
 ## Installation
 
-Pour développeurs : il faut [adb](https://developer.android.com/tools/adb) sur un ordinateur, et le Fire TV et le téléphone sur le même Wi-Fi.
+Pour l'instant, il faut [adb](https://developer.android.com/tools/adb) sur un ordinateur, une seule fois, et le Fire TV et le téléphone sur le même Wi-Fi.
+
+Téléchargez `tv-nudge-tv-<version>.apk` et `tv-nudge-phone-<version>.apk` depuis la [dernière version](https://github.com/FMagnanWD/tv-nudge/releases/latest), ou compilez-les vous-même (voir plus bas).
 
 1. Sur le Fire TV, ouvrez **Paramètres → Ma Fire TV → À propos** et cliquez 7 fois sur le nom de l'appareil. Puis, dans **Options pour les développeurs**, activez **Débogage ADB**.
 2. Notez l'adresse IP du Fire TV dans **Paramètres → Ma Fire TV → À propos → Réseau**.
-3. Compilez les deux apps (voir plus bas), puis installez l'app télé et donnez-lui ses autorisations. Fire OS n'a pas d'écran de réglage pour ces autorisations :
+3. Installez l'app télé et donnez-lui ses autorisations. Fire OS n'a pas d'écran de réglage pour ces autorisations :
 
    ```sh
    adb connect <IP_DU_FIRE_TV>:5555
-   adb install -r tv/build/outputs/apk/debug/tv-debug.apk
+   adb install -r tv-nudge-tv-0.1.0.apk
    adb shell appops set io.github.tvnudge.tv SYSTEM_ALERT_WINDOW allow    # afficher par-dessus les autres apps
    adb shell appops set io.github.tvnudge.tv GET_USAGE_STATS allow        # app à l'écran, temps d'écran
    adb shell settings put secure enabled_notification_listeners io.github.tvnudge.tv/io.github.tvnudge.tv.EcouteLecture   # lecture en cours
@@ -58,7 +60,7 @@ Pour développeurs : il faut [adb](https://developer.android.com/tools/adb) sur 
    ```
 
    Le service redémarre seul quand le Fire TV s'allume.
-4. Installez `phone/build/outputs/apk/debug/phone-debug.apk` sur le téléphone. Ouvrez-le et saisissez l'adresse IP du Fire TV en bas de l'écran.
+4. Installez `tv-nudge-phone-0.1.0.apk` sur le téléphone (autorisez l'installation depuis le navigateur ou le gestionnaire de fichiers quand il le demande). Ouvrez-le et saisissez l'adresse IP du Fire TV en bas de l'écran.
 5. Vous pouvez ensuite désactiver le débogage ADB : les autorisations restent.
 
 ## Compilation
@@ -67,7 +69,9 @@ Pour développeurs : il faut [adb](https://developer.android.com/tools/adb) sur 
 ./gradlew :tv:assembleDebug :phone:assembleDebug
 ```
 
-Il faut le JDK 17 et le SDK Android. Android Studio fournit les deux.
+Il faut le JDK 17 et le SDK Android. Android Studio fournit les deux. Les APK sont dans `tv/build/outputs/apk/debug/` et `phone/build/outputs/apk/debug/`. Une version debug ne peut pas mettre à jour une version publiée (signatures différentes) : désinstallez d'abord.
+
+Pour signer des versions release avec votre propre clé, voir [`gradle/signature.gradle`](gradle/signature.gradle).
 
 ## API (port 7979 du Fire TV)
 

@@ -1,0 +1,19 @@
+// Signature des versions publiées. La clé reste hors du dépôt : la propriété Gradle tvnudge.signature
+// (dans ~/.gradle/gradle.properties ou -Ptvnudge.signature=…) désigne un fichier .properties
+// avec storeFile, storePassword, keyAlias et keyPassword. Sans elle, la version release n'est pas signée.
+def chemin = findProperty('tvnudge.signature')
+if (chemin) {
+    def p = new Properties()
+    file(chemin).withInputStream { p.load(it) }
+    android {
+        signingConfigs {
+            publication {
+                storeFile file(p.storeFile)
+                storePassword p.storePassword
+                keyAlias p.keyAlias
+                keyPassword p.keyPassword
+            }
+        }
+        buildTypes.release.signingConfig signingConfigs.publication
+    }
+}
